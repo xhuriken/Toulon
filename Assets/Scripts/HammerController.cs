@@ -1,3 +1,4 @@
+﻿using System.Collections;
 using UnityEngine;
 
 public class HammerController : MonoBehaviour
@@ -12,12 +13,93 @@ public class HammerController : MonoBehaviour
 
     private Vector3 idlePos;
     private Quaternion idleRot;
+    float hitInput;
+
+    private bool canCombo = false; 
+    private bool hitQueued = false;
+
+    private bool reversing = false;
+
+    public Animator an;
 
     void Start()
     {
- 
+        an = GetComponent<Animator>();
         idlePos = transform.localPosition;
         idleRot = transform.localRotation;
+    }
+
+    private void Update()
+    {
+        MyInput();
+
+       
+        if (hitInput == 1f && !an.GetCurrentAnimatorStateInfo(0).IsName("HammerHit"))
+        {
+            an.SetTrigger("Hit");
+
+            Debug.Log("Hit");
+        }
+
+   
+    
+
+
+        //if (hitInput == 1f && canCombo)
+        //{
+        //    hitQueued = true;
+        //    Debug.Log("hitqueud");
+        //}
+    }
+
+    //private void EnableCombo()
+    //{
+    //    canCombo = true;       
+    //    hitQueued = false;
+    //    Debug.Log("CanCombo");
+    //}
+
+    //private void CheckCombo()
+    //{
+    //    Debug.Log("chkcombo");
+    //    if (hitQueued)
+    //    {
+    //        an.SetTrigger("Hit2");
+    //        Debug.Log("Hit2");
+    //    }
+
+
+    //    canCombo = false;
+    //    hitQueued = false;
+    //}
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Ground"))
+        {
+            an.speed = 0f; // stop animation
+            StartCoroutine(ReverseAfterDelay(0.5f));
+        }
+    }
+
+    private IEnumerator ReverseAfterDelay(float delay)
+    {
+        reversing = true;
+
+        yield return new WaitForSeconds(delay);
+
+       
+        an.speed = 1f;
+        Debug.Log("reverse");
+
+        reversing = false;
+    }
+
+
+
+    private void MyInput()
+    {
+        hitInput = Input.GetMouseButtonDown(0) ? 1f : 0f;
     }
 
     void LateUpdate()
@@ -54,4 +136,7 @@ public class HammerController : MonoBehaviour
             Time.deltaTime * rotLag
         );
     }
+
+ 
+
 }

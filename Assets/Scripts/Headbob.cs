@@ -69,7 +69,7 @@ public class Headbob : MonoBehaviour
     {
         if (_hammer == null) return;
 
-        // marteau bouge comme la cam mais un peu plus lourd
+     
         _hammer.localPosition += motion * hammerMultiplier;
     }
 
@@ -82,13 +82,13 @@ public class Headbob : MonoBehaviour
 
     private void ResetPosition()
     {
-        // Reset caméra
+       
         if (_camera.localPosition != _startPos)
         {
             _camera.localPosition = Vector3.Lerp(_camera.localPosition, _startPos, 1 * Time.deltaTime);
         }
 
-        // Reset marteau
+      
         if (_hammer != null && _hammer.localPosition != _hammerStartPos)
         {
             _hammer.localPosition = Vector3.Lerp(_hammer.localPosition, _hammerStartPos, 4 * Time.deltaTime);
