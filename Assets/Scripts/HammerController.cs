@@ -20,6 +20,7 @@ public class HammerController : MonoBehaviour
 
     public float hammerBounceForce = 12f;
     public Rigidbody playerRb;
+    public float minHeightForHitDown = 2f;
 
     public Animator an;
     public AudioSource audioSource;
@@ -38,17 +39,15 @@ public class HammerController : MonoBehaviour
     {
         hitInput = Input.GetMouseButton(0) ? 1f : 0f;
         bool isHitDown = an.GetCurrentAnimatorStateInfo(0).IsName(hitDownAnimName);
-
+ 
         if (hitInput == 1f)
         {
-            if (!playerMovement.grounded)
+            if (!playerMovement.grounded && transform.position.y >= minHeightForHitDown)
             {
                 an.SetTrigger("HitDown");
                 an.speed = 0f;
-
                 
             }
-
 
             else
             {
@@ -56,8 +55,6 @@ public class HammerController : MonoBehaviour
                 {
                     an.SetTrigger("Hit");
                 }
-
-
             }
 
          
@@ -67,31 +64,29 @@ public class HammerController : MonoBehaviour
         {
             an.speed = 1f;
         }
+
+        
     }
 
-
-    public void PlaySound(AudioClip clip)
+    public void jump()
     {
-      
-            audioSource.PlayOneShot(clip);
-    }
-
-
-    private void OnCollisionEnter(Collision collision)
-    {
-        if (!collision.gameObject.CompareTag("Ground"))
-            return;
-
         bool isHitDown = an.GetCurrentAnimatorStateInfo(0).IsName(hitDownAnimName);
-
-        if ( IsLookingDown() && an.GetCurrentAnimatorStateInfo(0).IsName("HammerHit") && !isHitDown)
-        {      
+        if (IsLookingDown() && !isHitDown)
+        {
+            Debug.Log("boing");
             playerRb.AddForce(Vector3.up * hammerBounceForce, ForceMode.Impulse);
         }
     }
 
-    private bool IsLookingDown()
+    public void PlaySound(AudioClip clip)
     {
+      
+       audioSource.PlayOneShot(clip);
+    }
+
+
+    private bool IsLookingDown()
+    { 
         float pitch = playerCamera.localEulerAngles.x;
 
         if (pitch > 180f)

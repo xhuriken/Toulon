@@ -478,4 +478,20 @@ AnimationClip:
     flags: 0
   m_HasGenericRootTransform: 1
   m_HasMotionFloatCurves: 0
-  m_Events: []
+  m_Events:
+  - time: 0.06666667
+    functionName: PlaySound
+    data: 
+    objectReferenceParameter: {fileID: 8300000, guid: fa576cba3603a824d86a482e124ef86e,
+      type: 3}
+    floatParameter: 0
+    intParameter: 0
+    messageOptions: 0
+  - time: 0.43333334
+    functionName: PlaySound
+    data: 
+    objectReferenceParameter: {fileID: 8300000, guid: 3819a9a9339a4ca4b86e08f0163d8f45,
+      type: 3}
+    floatParameter: 0
+    intParameter: 0
+    messageOptions: 0
