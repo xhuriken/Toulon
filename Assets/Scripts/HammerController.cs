@@ -15,128 +15,90 @@ public class HammerController : MonoBehaviour
     private Quaternion idleRot;
     float hitInput;
 
-    private bool canCombo = false; 
-    private bool hitQueued = false;
+    public Transform playerCamera;
+    public float requiredLookAngle = 40f;
 
-    private bool reversing = false;
+    public float hammerBounceForce = 12f;
+    public Rigidbody playerRb;
 
     public Animator an;
+    public AudioSource audioSource;
+    public PlayerMovement playerMovement;
 
+    public string hitDownAnimName = "HammerDown";
     void Start()
     {
         an = GetComponent<Animator>();
+        audioSource = GetComponent<AudioSource>();
         idlePos = transform.localPosition;
         idleRot = transform.localRotation;
     }
 
     private void Update()
     {
-        MyInput();
+        hitInput = Input.GetMouseButton(0) ? 1f : 0f;
+        bool isHitDown = an.GetCurrentAnimatorStateInfo(0).IsName(hitDownAnimName);
 
-       
-        if (hitInput == 1f && !an.GetCurrentAnimatorStateInfo(0).IsName("HammerHit"))
+        if (hitInput == 1f)
         {
-            an.SetTrigger("Hit");
+            if (!playerMovement.grounded)
+            {
+                an.SetTrigger("HitDown");
+                an.speed = 0f;
 
-            Debug.Log("Hit");
+                
+            }
+
+
+            else
+            {
+                if (!an.GetCurrentAnimatorStateInfo(0).IsName("HammerHit") && !isHitDown)
+                {
+                    an.SetTrigger("Hit");
+                }
+
+
+            }
+
+         
         }
-
-   
-    
-
-
-        //if (hitInput == 1f && canCombo)
-        //{
-        //    hitQueued = true;
-        //    Debug.Log("hitqueud");
-        //}
+      
+        if (isHitDown && playerMovement.grounded)
+        {
+            an.speed = 1f;
+        }
     }
 
-    //private void EnableCombo()
-    //{
-    //    canCombo = true;       
-    //    hitQueued = false;
-    //    Debug.Log("CanCombo");
-    //}
 
-    //private void CheckCombo()
-    //{
-    //    Debug.Log("chkcombo");
-    //    if (hitQueued)
-    //    {
-    //        an.SetTrigger("Hit2");
-    //        Debug.Log("Hit2");
-    //    }
+    public void PlaySound(AudioClip clip)
+    {
+      
+            audioSource.PlayOneShot(clip);
+    }
 
-
-    //    canCombo = false;
-    //    hitQueued = false;
-    //}
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.CompareTag("Ground"))
-        {
-            an.speed = 0f; // stop animation
-            StartCoroutine(ReverseAfterDelay(0.5f));
+        if (!collision.gameObject.CompareTag("Ground"))
+            return;
+
+        bool isHitDown = an.GetCurrentAnimatorStateInfo(0).IsName(hitDownAnimName);
+
+        if ( IsLookingDown() && an.GetCurrentAnimatorStateInfo(0).IsName("HammerHit") && !isHitDown)
+        {      
+            playerRb.AddForce(Vector3.up * hammerBounceForce, ForceMode.Impulse);
         }
     }
 
-    private IEnumerator ReverseAfterDelay(float delay)
+    private bool IsLookingDown()
     {
-        reversing = true;
+        float pitch = playerCamera.localEulerAngles.x;
 
-        yield return new WaitForSeconds(delay);
+        if (pitch > 180f)
+            pitch -= 360f;
 
-       
-        an.speed = 1f;
-        Debug.Log("reverse");
-
-        reversing = false;
+        return pitch > requiredLookAngle;
     }
 
-
-
-    private void MyInput()
-    {
-        hitInput = Input.GetMouseButtonDown(0) ? 1f : 0f;
-    }
-
-    //void LateUpdate()
-    //{
-    //    float mouseX = Input.GetAxis("Mouse X");
-    //    float mouseY = Input.GetAxis("Mouse Y");
-
-    //    Vector3 posOffset = new Vector3(
-    //        -mouseX * posAmount,
-    //        -mouseY * posAmount,
-    //        0f
-    //    );
-
-   
-    //    Quaternion rotOffset = Quaternion.Euler(
-    //        -mouseY * rotAmount,
-    //        -mouseX * rotAmount,
-    //        0f
-    //    );
-
-    //    Vector3 targetPos = idlePos + posOffset;
-    //    Quaternion targetRot = idleRot * rotOffset;
-
-        
-    //    transform.localPosition = Vector3.Lerp(
-    //        transform.localPosition,
-    //        targetPos,
-    //        Time.deltaTime * posLag
-    //    );
-
-    //    transform.localRotation = Quaternion.Slerp(
-    //        transform.localRotation,
-    //        targetRot,
-    //        Time.deltaTime * rotLag
-    //    );
-    //}
-
- 
 
 }
