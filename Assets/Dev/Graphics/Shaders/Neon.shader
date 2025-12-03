@@ -1,4 +1,4 @@
-﻿Shader "Custom/NeonBrick_ProfStyle"
+﻿Shader "Custom/Neon"
 {
     Properties
     {
@@ -26,14 +26,14 @@
 
             #include "UnityCG.cginc"
 
-            // Entrée vertex
+            // Vertex
             struct appdata
             {
                 float4 vertex : POSITION;
                 float2 uv     : TEXCOORD0;
             };
 
-            // Données interpolées vers le fragment
+            // Vertex to fragment
             struct v2f
             {
                 float2 uv     : TEXCOORD0;
@@ -41,7 +41,7 @@
                 float4 vertex : SV_POSITION;
             };
 
-            // Propriétés
+            // shader properties
             float4 _InsideColor;
             float  _Width;
             float  _ColorSpeed;
@@ -60,7 +60,7 @@
                 return o;
             }
 
-            // Couleur arc-en-ciel
+            // arc en ciel colooooor
             float3 Rainbow(float t)
             {
                 float phase = frac(t) * 6.2831853; // 2π
@@ -102,27 +102,27 @@
             {
                 float2 uv = i.uv;
 
-                // ----- Bord extérieur de la face -----
+                // Eternal border
                 float2 distToEdge = min(uv, 1.0 - uv);
                 float  minDist    = min(distToEdge.x, distToEdge.y);
-                float  insideMask = step(_Width, minDist); // 1 = intérieur, 0 = bord
+                float  insideMask = step(_Width, minDist); // 1 = inside, 0 = border
 
-                // Couleur néon (bord + joints)
+                // Neon color (border + joints)
                 float  t = _Time.y * _ColorSpeed;
                 float3 neonCol = Rainbow(t) * _NeonIntensity;
 
-                // ----- Pattern de briques (uniquement à l’intérieur de la face) -----
+                // Bricks pattern
                 // On travaille dans un espace UV brique
                 float2 brickUV = uv / float2(2.15, 0.65) / 1.5;
                 brickUV = Brickify(brickUV, _GridSize);
 
-                // inBox = 1 dans la brique, 0 dans le joint
+                // inBox = 1 inside brick, 0 in joint
                 float inBox = DrawBox(brickUV, float2(_BoxSize * 0.5, _BoxSize));
 
                 float3 insideCol  = _InsideColor.rgb;
-                float3 brickColor = lerp(neonCol, insideCol, inBox); // joint = néon, brique = inside
+                float3 brickColor = lerp(neonCol, insideCol, inBox); // joint = neon, brique = inside
 
-                // ----- Mix global : bord extérieur vs intérieur briques -----
+                // MIX ! tembouille
                 float3 finalColor = lerp(neonCol, brickColor, insideMask);
 
                 // Fog
