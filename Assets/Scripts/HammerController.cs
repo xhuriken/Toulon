@@ -102,40 +102,40 @@ public class HammerController : MonoBehaviour
         hitInput = Input.GetMouseButtonDown(0) ? 1f : 0f;
     }
 
-    void LateUpdate()
-    {
-        float mouseX = Input.GetAxis("Mouse X");
-        float mouseY = Input.GetAxis("Mouse Y");
+    //void LateUpdate()
+    //{
+    //    float mouseX = Input.GetAxis("Mouse X");
+    //    float mouseY = Input.GetAxis("Mouse Y");
 
-        Vector3 posOffset = new Vector3(
-            -mouseX * posAmount,
-            -mouseY * posAmount,
-            0f
-        );
+    //    Vector3 posOffset = new Vector3(
+    //        -mouseX * posAmount,
+    //        -mouseY * posAmount,
+    //        0f
+    //    );
 
    
-        Quaternion rotOffset = Quaternion.Euler(
-            -mouseY * rotAmount,
-            -mouseX * rotAmount,
-            0f
-        );
+    //    Quaternion rotOffset = Quaternion.Euler(
+    //        -mouseY * rotAmount,
+    //        -mouseX * rotAmount,
+    //        0f
+    //    );
 
-        Vector3 targetPos = idlePos + posOffset;
-        Quaternion targetRot = idleRot * rotOffset;
+    //    Vector3 targetPos = idlePos + posOffset;
+    //    Quaternion targetRot = idleRot * rotOffset;
 
         
-        transform.localPosition = Vector3.Lerp(
-            transform.localPosition,
-            targetPos,
-            Time.deltaTime * posLag
-        );
+    //    transform.localPosition = Vector3.Lerp(
+    //        transform.localPosition,
+    //        targetPos,
+    //        Time.deltaTime * posLag
+    //    );
 
-        transform.localRotation = Quaternion.Slerp(
-            transform.localRotation,
-            targetRot,
-            Time.deltaTime * rotLag
-        );
-    }
+    //    transform.localRotation = Quaternion.Slerp(
+    //        transform.localRotation,
+    //        targetRot,
+    //        Time.deltaTime * rotLag
+    //    );
+    //}
 
  
 
