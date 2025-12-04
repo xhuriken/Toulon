@@ -25,6 +25,7 @@ public class HammerController : MonoBehaviour
     public Animator an;
     public AudioSource audioSource;
     public PlayerMovement playerMovement;
+    public PlayerCam playerCam;
 
     public string hitDownAnimName = "HammerDown";
     void Start()
@@ -37,6 +38,7 @@ public class HammerController : MonoBehaviour
 
     private void Update()
     {
+
         hitInput = Input.GetMouseButton(0) ? 1f : 0f;
         bool isHitDown = an.GetCurrentAnimatorStateInfo(0).IsName(hitDownAnimName);
  
@@ -51,9 +53,12 @@ public class HammerController : MonoBehaviour
 
             else
             {
-                if (!an.GetCurrentAnimatorStateInfo(0).IsName("HammerHit") && !isHitDown)
+                if (!an.GetCurrentAnimatorStateInfo(0).IsName("HammerHit") && !isHitDown && IsLookingDown() )
                 {
                     an.SetTrigger("Hit");
+                }else if (!an.GetCurrentAnimatorStateInfo(0).IsName("HammerHit2") && !isHitDown && !IsLookingDown())
+                {
+                    an.SetTrigger("Hit2");
                 }
             }
 
@@ -86,14 +91,8 @@ public class HammerController : MonoBehaviour
 
 
     private bool IsLookingDown()
-    { 
-        float pitch = playerCamera.localEulerAngles.x;
-
-        if (pitch > 180f)
-            pitch -= 360f;
-
-        return pitch > requiredLookAngle;
+    {
+        return playerCam.XRotation > requiredLookAngle;
     }
-
 
 }
